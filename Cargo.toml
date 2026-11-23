@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 license = "MIT"
 description = "Runbooks that run, a versioned prompt/config store with guardrails and rollback, chaos tests and a handoff readiness score."
-repository = "https://github.com/braylo-ai/fde-12-handoff-admin"
+repository = "https://github.com/braylo777/fde-12-handoff-admin"
 
 [lib]
 crate-type = ["rlib", "cdylib"]
