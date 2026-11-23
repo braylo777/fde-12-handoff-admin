@@ -1,0 +1,26 @@
+[package]
+name = "fde-12-handoff-admin"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Runbooks that run, a versioned prompt/config store with guardrails and rollback, chaos tests and a handoff readiness score."
+repository = "https://github.com/braylo-ai/fde-12-handoff-admin"
+
+[lib]
+crate-type = ["rlib", "cdylib"]
+
+[[bin]]
+name = "fde-12-handoff-admin"
+path = "src/main.rs"
+
+[dependencies]
+serde = { version = "=1.0.229", features = ["derive"] }
+serde_json = "=1.0.154"
+sha2 = "=0.10.9"
+hmac = "=0.12.1"
+
+[profile.release]
+opt-level = "s"
+lto = true
+panic = "abort"
+codegen-units = 1
