@@ -7,10 +7,11 @@
   "covers": [
     "Runbook lint: owner, verification check, rollback for mutating actions, dangling and unreachable steps",
     "Runbook execution against live observations: branch walk, loop guard, timeline, list of actions for the operator",
-    "Config store: schema validation (types, ranges, allow-lists, length), credential detection, diff, two-person approval for risky keys, rollback, full history",
+    "Prompt and config store: schema validation (types, ranges, allow-lists, length), credential detection, diff, two-person approval for risky keys, rollback, full history",
     "Chaos plan per component kind (LLM 429 / latency, vector DB down, pod kill, mid-workflow crash, expired credential, egress block) with blast radius and abort rules",
     "Chaos scoring: behaviour, alerting and recovery time; follow-up per failure",
-    "Handoff readiness: weighted evidence checklist with blocking items"
+    "Handoff readiness: weighted evidence checklist with blocking items",
+    "Trace viewer: OTLP/JSON (from any collector or fde-09) to a per-trace waterfall with offsets, durations, model and token counts, errors first; filter by service, errors only, minimum duration"
   ],
   "gaps": [
     "Runbook actions are listed for the operator, not executed (no kubectl or cloud API calls)",
@@ -473,6 +474,255 @@
           "escalation": "Vendor SLA doc v2"
         }
       }
+    },
+    {
+      "op": "trace_view",
+      "label": "View traces",
+      "help": "Customer IT pastes an OTLP/JSON export and sees each trace as a waterfall: span tree, offsets, durations, model and tokens per LLM call, errors first. Filter by service, errors only or minimum duration.",
+      "input": {
+        "otlp": {
+          "resourceSpans": [
+            {
+              "resource": {
+                "attributes": [
+                  {
+                    "key": "service.name",
+                    "value": {
+                      "stringValue": "support-agent"
+                    }
+                  }
+                ]
+              },
+              "scopeSpans": [
+                {
+                  "scope": {
+                    "name": "agent"
+                  },
+                  "spans": [
+                    {
+                      "traceId": "4bf92f3577b34da6a3ce929d0e0e4736",
+                      "spanId": "a1",
+                      "parentSpanId": "",
+                      "name": "support.handle_ticket",
+                      "startTimeUnixNano": "1767225600000000000",
+                      "endTimeUnixNano": "1767225602840000000",
+                      "attributes": []
+                    },
+                    {
+                      "traceId": "4bf92f3577b34da6a3ce929d0e0e4736",
+                      "spanId": "a2",
+                      "parentSpanId": "a1",
+                      "name": "chat",
+                      "startTimeUnixNano": "1767225600040000000",
+                      "endTimeUnixNano": "1767225601210000000",
+                      "attributes": [
+                        {
+                          "key": "gen_ai.request.model",
+                          "value": {
+                            "stringValue": "claude-haiku-5-5"
+                          }
+                        },
+                        {
+                          "key": "gen_ai.usage.input_tokens",
+                          "value": {
+                            "intValue": "3092"
+                          }
+                        },
+                        {
+                          "key": "gen_ai.usage.output_tokens",
+                          "value": {
+                            "intValue": "588"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "traceId": "4bf92f3577b34da6a3ce929d0e0e4736",
+                      "spanId": "a3",
+                      "parentSpanId": "a1",
+                      "name": "tool.lookup_order",
+                      "startTimeUnixNano": "1767225601250000000",
+                      "endTimeUnixNano": "1767225601610000000",
+                      "attributes": []
+                    },
+                    {
+                      "traceId": "4bf92f3577b34da6a3ce929d0e0e4736",
+                      "spanId": "a4",
+                      "parentSpanId": "a1",
+                      "name": "chat",
+                      "startTimeUnixNano": "1767225601650000000",
+                      "endTimeUnixNano": "1767225602800000000",
+                      "attributes": [
+                        {
+                          "key": "gen_ai.request.model",
+                          "value": {
+                            "stringValue": "claude-haiku-5-5"
+                          }
+                        },
+                        {
+                          "key": "gen_ai.usage.input_tokens",
+                          "value": {
+                            "intValue": "3720"
+                          }
+                        },
+                        {
+                          "key": "gen_ai.usage.output_tokens",
+                          "value": {
+                            "intValue": "212"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "traceId": "0af7651916cd43dd8448eb211c80319c",
+                      "spanId": "b1",
+                      "parentSpanId": "",
+                      "name": "support.handle_ticket",
+                      "startTimeUnixNano": "1767225600000000000",
+                      "endTimeUnixNano": "1767225609420000000",
+                      "attributes": []
+                    },
+                    {
+                      "traceId": "0af7651916cd43dd8448eb211c80319c",
+                      "spanId": "b2",
+                      "parentSpanId": "b1",
+                      "name": "chat",
+                      "startTimeUnixNano": "1767225600030000000",
+                      "endTimeUnixNano": "1767225605030000000",
+                      "attributes": [
+                        {
+                          "key": "gen_ai.request.model",
+                          "value": {
+                            "stringValue": "claude-sonnet-5-5"
+                          }
+                        },
+                        {
+                          "key": "gen_ai.usage.input_tokens",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        },
+                        {
+                          "key": "gen_ai.usage.output_tokens",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        }
+                      ],
+                      "status": {
+                        "code": 2,
+                        "message": "429 rate limited by provider"
+                      }
+                    },
+                    {
+                      "traceId": "0af7651916cd43dd8448eb211c80319c",
+                      "spanId": "b3",
+                      "parentSpanId": "b1",
+                      "name": "chat",
+                      "startTimeUnixNano": "1767225605100000000",
+                      "endTimeUnixNano": "1767225609400000000",
+                      "attributes": [
+                        {
+                          "key": "gen_ai.request.model",
+                          "value": {
+                            "stringValue": "claude-sonnet-5-5"
+                          }
+                        },
+                        {
+                          "key": "gen_ai.usage.input_tokens",
+                          "value": {
+                            "intValue": "4410"
+                          }
+                        },
+                        {
+                          "key": "gen_ai.usage.output_tokens",
+                          "value": {
+                            "intValue": "630"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "traceId": "b7ad6b7169203331b7ad6b7169203331",
+                      "spanId": "c1",
+                      "parentSpanId": "",
+                      "name": "faq.answer",
+                      "startTimeUnixNano": "1767225600000000000",
+                      "endTimeUnixNano": "1767225600610000000",
+                      "attributes": []
+                    },
+                    {
+                      "traceId": "b7ad6b7169203331b7ad6b7169203331",
+                      "spanId": "c2",
+                      "parentSpanId": "c1",
+                      "name": "chat",
+                      "startTimeUnixNano": "1767225600020000000",
+                      "endTimeUnixNano": "1767225600600000000",
+                      "attributes": [
+                        {
+                          "key": "gen_ai.request.model",
+                          "value": {
+                            "stringValue": "claude-haiku-5-5"
+                          }
+                        },
+                        {
+                          "key": "gen_ai.usage.input_tokens",
+                          "value": {
+                            "intValue": "820"
+                          }
+                        },
+                        {
+                          "key": "gen_ai.usage.output_tokens",
+                          "value": {
+                            "intValue": "96"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "resource": {
+                "attributes": [
+                  {
+                    "key": "service.name",
+                    "value": {
+                      "stringValue": "orders-api"
+                    }
+                  }
+                ]
+              },
+              "scopeSpans": [
+                {
+                  "scope": {
+                    "name": "http"
+                  },
+                  "spans": [
+                    {
+                      "traceId": "4bf92f3577b34da6a3ce929d0e0e4736",
+                      "spanId": "g1",
+                      "parentSpanId": "a3",
+                      "name": "GET /orders/SO-5285656",
+                      "startTimeUnixNano": "1767225601270000000",
+                      "endTimeUnixNano": "1767225601600000000",
+                      "attributes": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "filter": {
+          "min_duration_ms": 1000
+        }
+      }
     }
-  ]
+  ],
+  "project": {
+    "n": 12,
+    "title": "Self-Serve Customer Admin Portal"
+  }
 }

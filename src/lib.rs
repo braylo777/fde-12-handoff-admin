@@ -9,17 +9,19 @@
 //! * `chaos`   — generate chaos experiments for a deployment in the customer's VPC, and
 //!   score observed results against expected behaviour.
 //! * `readiness` — a handoff checklist with evidence, weighted into a go / no-go score.
+//! * `traces` — OTLP/JSON trace viewer: span-tree waterfall, errors, GenAI tokens, filters.
 
 mod api;
 pub mod chaos;
 pub mod config;
 pub mod readiness;
 pub mod runbook;
+pub mod traces;
 
 pub use api::dispatch;
 use serde_json::Value;
 
-pub const OPS: &[&str] = &["lint_runbook", "run_runbook", "config_change", "chaos_plan", "chaos_score", "handoff_readiness"];
+pub const OPS: &[&str] = &["lint_runbook", "run_runbook", "config_change", "chaos_plan", "chaos_score", "handoff_readiness", "trace_view"];
 
 pub fn handle(op: &str, i: &Value) -> Result<Value, String> {
     match op {
@@ -29,6 +31,7 @@ pub fn handle(op: &str, i: &Value) -> Result<Value, String> {
         "chaos_plan" => chaos::plan_op(i),
         "chaos_score" => chaos::score_op(i),
         "handoff_readiness" => readiness::score_op(i),
+        "trace_view" => traces::view_op(i),
         _ => Err(format!("unknown op `{op}`; known: {}", OPS.join(", "))),
     }
 }

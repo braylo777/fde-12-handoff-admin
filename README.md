@@ -4,6 +4,8 @@
 
 Make the FDE unnecessary: runbooks that run, a prompt/config portal with guardrails and rollback, chaos tests in the customer's VPC, and a go / no-go score for handoff.
 
+**Also built as Project 12 of 12, "Self-Serve Customer Admin Portal",** from the companion [12 FDE projects post](https://x.com/suraj_sharma14/status/2125197762752806998).
+
 **Live demo:** https://fde-12-handoff-admin.braylo777.workers.dev — the Rust core runs in your browser as WebAssembly. No server, no tracking.
 
 ## Why this matters
@@ -14,10 +16,11 @@ A deployment is not done when it works; it is done when the customer's IT team c
 
 - Runbook lint: owner, verification check, rollback for mutating actions, dangling and unreachable steps
 - Runbook execution against live observations: branch walk, loop guard, timeline, list of actions for the operator
-- Config store: schema validation (types, ranges, allow-lists, length), credential detection, diff, two-person approval for risky keys, rollback, full history
+- Prompt and config store: schema validation (types, ranges, allow-lists, length), credential detection, diff, two-person approval for risky keys, rollback, full history
 - Chaos plan per component kind (LLM 429 / latency, vector DB down, pod kill, mid-workflow crash, expired credential, egress block) with blast radius and abort rules
 - Chaos scoring: behaviour, alerting and recovery time; follow-up per failure
 - Handoff readiness: weighted evidence checklist with blocking items
+- Trace viewer: OTLP/JSON (from any collector or fde-09) to a per-trace waterfall with offsets, durations, model and token counts, errors first; filter by service, errors only, minimum duration
 
 ## What it does not do (yet)
 
@@ -37,6 +40,7 @@ Every operation takes JSON in and gives JSON out. The CLI, the tests and the dem
 | `chaos_plan` | Experiments for each component in the customer VPC. The single-replica ingest worker is reported as a finding instead of a test. |
 | `chaos_score` | Results from the game day. The vector DB outage was handled but no alert fired; the credential test failed open. Handoff is blocked until both are fixed. |
 | `handoff_readiness` | Evidence collected so far. The score is high, but no one outside the FDE has used the admin portal yet, which blocks the handoff. |
+| `trace_view` | Customer IT pastes an OTLP/JSON export and sees each trace as a waterfall: span tree, offsets, durations, model and tokens per LLM call, errors first. Filter by service, errors only or minimum duration. |
 
 ## Run it
 
@@ -83,7 +87,7 @@ web/              demo page; examples.json drives both the page and this README
 
 ## Part of a series
 
-This is one of 12 repos that work through a public Forward Deployed Engineering roadmap ([source post](https://x.com/suraj_sharma14/status/2124827808535048566)). All 12: [github.com/braylo777?q=fde-](https://github.com/braylo777?tab=repositories&q=fde-).
+This is one of 12 repos that work through a public Forward Deployed Engineering roadmap ([12 stages](https://x.com/suraj_sharma14/status/2124827808535048566), [12 projects](https://x.com/suraj_sharma14/status/2125197762752806998)). All 12: [github.com/braylo777?q=fde-](https://github.com/braylo777?tab=repositories&q=fde-).
 
 ## License
 
